@@ -1,12 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Key Detection</title>
-  <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>
-</head>
-<body>
-<script>
-</script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Key Detection</title>
+    <script
+      type="text/javascript"
+      src="https://www.cornify.com/js/cornify.js"
+    ></script>
+  </head>
+  <body>
+    <script>
+      // 누른 키 들을 담을 배열
+      const pressed = [];
+      // 원하는 시크릿코드
+      const secretCode = "lamascript"; // secretCode.length = 10
+
+      // 윈도우 키업
+      // 키보드 클릭시 해당 키
+      window.addEventListener("keyup", (e) => {
+        // console.log(e.key);
+        pressed.push(e.key);
+        // 원하는 길이 이상이 되면 앞에 껏부터 자른다
+        pressed.splice(
+          -secretCode.length - 1,
+          pressed.length - secretCode.length
+        );
+        if (pressed.join("").includes(secretCode)) {
+          console.log("correct");
+          // zzz 이거 뭐야
+          cornify_add();
+        }
+        console.log(pressed);
+      });
+    </script>
+  </body>
 </html>
