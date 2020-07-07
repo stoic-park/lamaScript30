@@ -56,7 +56,7 @@
     <script>
       const addItems = document.querySelector(".add-items");
       const itemsList = document.querySelector(".plates");
-      const items = [];
+      const items = JSON.parse(localStorage.getItem("items")) || [];
 
       function addItem(e) {
         e.preventDefault(); // 이거 해주지 않으면 계속 새로고침
@@ -86,16 +86,36 @@
               <input type="checkbox" data-index=${i} id="item${i}" ${
               plate.done ? "checked" : ""
             }/>
-              <label for="">${plate.text}</label>
+              <label for="item${i}">${plate.text}</label>
             </li>
           `;
           })
           .join(""); // map이기 때문에 배열, li에는 큰 스트링 하나가 들어간다
       }
 
-      addItems.addEventListener("submit", addItem);
+      function toggleDone(e) {
+        if (!e.target.matches("input")) return; // skip this unless it's an input
+        // console.log(e.target);
+        const el = e.target;
+        // console.log(el.dataset.index);
+        const index = el.dataset.index;
+        items[index].done = !items[index].done;
+        // 바뀐 사항을 로컬스토리지에 저장
+        localStorage.setItem("items", JSON.stringify(items));
+        // 리스트 추가 like 랜더
+        populateList(items, itemsList);
+      }
 
-      // populateList(item, itemsList)
+      addItems.addEventListener("submit", addItem);
+      itemsList.addEventListener("click", toggleDone);
+      populateList(items, itemsList);
+
+      // const checkBoxes = document.querySelectorAll("input");
+
+      // checkBoxes.forEach(
+      //   (input) => input.addEventListener("click", () => alert("hi")) // not working : additem 버튼을 눌러야해
+      // );
+      // populateList가 먼저 실행되면 되네..?
     </script>
   </body>
 </html>
