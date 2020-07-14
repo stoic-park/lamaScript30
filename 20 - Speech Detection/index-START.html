@@ -10,6 +10,44 @@
     <script>
       window.SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      // 음성 인식 웹킷
+      const recognition = new SpeechRecognition();
+      recognition.interimResults = true;
+
+      let p = document.createElement("p");
+      const words = document.querySelector(".words");
+      words.appendChild(p);
+
+      recognition.addEventListener("result", (e) => {
+        // console.log(e.results); // not array, so can not using map
+        const transcript = Array.from(e.results) // make array
+          .map((result) => result[0])
+          .map((result) => result.transcript)
+          .join("");
+
+        // 추가 텍스트 시각화 처리
+        p.textContent = transcript;
+        // isFinal이라는 속성을 이용해서 문단을 나눌 수도 있다
+        if (e.results[0].isFinal) {
+          p = document.createElement("p");
+          words.appendChild(p);
+        }
+        // 음성 인식 텍스트 중에 특정 텍스트를 포함하고 있을 경우 이벤트 처리????
+        if (transcript.includes("라마")) {
+          console.log("🇵🇪🇵🇪🇵🇪🇵🇪🇵🇪🇵🇪🇵🇪🇵🇪🇵🇪🇵🇪");
+        }
+        // 특정 단어에 대해서 수정해줄수도 있겠네?
+        console.log(transcript);
+      });
+
+      // 여기까지 진행했을 경우, 음성 인식 시간이 매우 짧다는 불편함을 갖고 있따..
+      // 그래서..!
+      // 음성 인식 멈춤 => 시작 처리
+      recognition.addEventListener("end", recognition.start);
+
+      // 음성인식 스탈트!
+      recognition.start();
     </script>
 
     <style>
