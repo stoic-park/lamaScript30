@@ -47,6 +47,39 @@
 
     <script>
       // 👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀
+
+      // 1. 타겟 설정
+      const triggers = document.querySelectorAll("a");
+      const highlight = document.createElement("span");
+
+      // 2. 하이라이트 클라스 추가하기
+      highlight.classList.add("highlight");
+      document.body.append(highlight); // body의 끝에 highlight 태그 추가
+
+      // 3. highlight 함수
+      function highlightLink() {
+        console.log(this); // ex) <a href>explicabo</a>
+        // # getBoundingClientRect
+        // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+        // 뷰포트를 기준으로 상대적인 위치와 element의 사이즈를 리턴한다
+        const linkCoords = this.getBoundingClientRect();
+        console.log(linkCoords);
+        const coords = {
+          width: linkCoords.width,
+          height: linkCoords.height,
+          top: linkCoords.top + window.scrollY,
+          left: linkCoords.left + window.scrollX,
+        };
+        highlight.style.width = `${coords.width}px`;
+        highlight.style.height = `${coords.height}px`;
+        highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`;
+        // 그러나 화면 처음화면에서 스크롤을 내리면 하이라이트의 영역이 제대로 맞지 않는다
+        // 스크롤 영역을 확인해야 한다
+        // 그래서 값을 스크롤 위치에 맞는 값으로 수정해줘야 한다 :coords
+      }
+
+      // 4. 각 a 태그에 이벤트 걸어주기
+      triggers.forEach((a) => a.addEventListener("mouseenter", highlightLink));
     </script>
   </body>
 </html>
