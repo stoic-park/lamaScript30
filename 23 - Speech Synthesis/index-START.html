@@ -30,6 +30,11 @@
     </div>
 
     <script>
+      // SpeechSynthesisUtterance
+      // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
+      // Web Voice API의 SpeechSynthesisUtterance 인터페이스는 음성 요청을 나타냅니다.
+      // 음성 서비스에서 읽어야 할 내용과 읽기 방법
+      // (예: 언어, 피치 및 볼륨)에 대한 정보가 들어 있습니다.
       const msg = new SpeechSynthesisUtterance();
       let voices = [];
       const voicesDropdown = document.querySelector('[name="voice"]');
@@ -38,6 +43,61 @@
       );
       const speakButton = document.querySelector("#speak");
       const stopButton = document.querySelector("#stop");
+
+      // 1. SpeechSynthesisUtterence에 텍스트 항목에 값 집어넣기
+      msg.text = document.querySelector(`[name="text"]`).value;
+
+      // 2.음성변환 이벤트 걸어주기
+
+      function populateVoices() {
+        voices = this.getVoices();
+        // console.log(voices); // 다양한 언어
+
+        // 1. 카테고리 드롭다운에 다양한 언어 옵션 추가
+        // select -> option
+        voicesDropdown.innerHTML = voices
+          // # 한국어로 된 언어만 필터
+          .filter((voice) => voice.lang.includes("ko"))
+          .map(
+            (voice) =>
+              `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`
+          )
+          .join("");
+      }
+      // 하지만 여전히 msg.voice는 null 넣어줘야지?
+      // speechSynthesis.speak(msg)
+      function setVoice() {
+        // console.log(this.value); // 선택한 언어 옵션
+        msg.voice = voices.find((voice) => voice.name === this.value);
+        toggle();
+      }
+
+      // stop and play
+      function toggle(startOver = true) {
+        speechSynthesis.cancel();
+        if (startOver) {
+          speechSynthesis.speak(msg);
+        }
+      }
+
+      // options 변경하기
+      // options = NodeList(3) [input, input, textarea]
+      function setOption() {
+        console.log(this.name, this.value); // ex) rate 0.3
+        msg[this.name] = this.value;
+        toggle();
+      }
+
+      // # 이벤트 걸어주기
+      speechSynthesis.addEventListener("voiceschanged", populateVoices);
+      voicesDropdown.addEventListener("change", setVoice);
+      options.forEach((option) => option.addEventListener("change", setOption));
+      speakButton.addEventListener("click", toggle);
+      // stopButton.addEventListener("click", function () {
+      //   toggle(false);
+      // });
+      // stopButton.addEventListener("click", toggle.bind(null, false));
+      stopButton.addEventListener("click", () => toggle(false));
     </script>
   </body>
 </html>
