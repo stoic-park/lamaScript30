@@ -56,11 +56,11 @@
 
       // // 3. Propagation
       // // 닥치고 나는 원하는 것만..!
-      // function logText(e) {
-      //   console.log(this.classList.value);
-      //   e.stopPropagation(); // stop bubbling!
-      //   // console.log(this)
-      // }
+      function logText(e) {
+        console.log(this.classList.value);
+        e.stopPropagation(); // stop bubbling!
+        // console.log(this)
+      }
 
       document.body.addEventListener("click", logText);
 
